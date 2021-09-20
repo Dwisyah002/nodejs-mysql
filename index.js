@@ -18,14 +18,14 @@ app.set('view engine', 'ejs');
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "mypass",
-    database: "nodejs"
+    password: "",
+    database: "day3"
 });
 
-// db.connect(err => {
-//     if (err) throw err;
-//     console.log('Database connected');
-// })
+db.connect((err) => {
+    if (err) throw err;
+    console.log('Database connected');
+})
 
 // Route
 // Form
@@ -35,13 +35,14 @@ app.get("/form", (req, res) => {
 })
 
 // Data
-// app.get("/data", (req, res) => {
-//     const query = "SELECT * FROM visitorsList";
-//     db.query(query, (err, response) => {
-//         if (err) throw err;
-//         res.render('data', { visitorsList: response });
-//     })
-// })
+app.get("/data", (req, res) => {
+    const query = "SELECT * FROM visitorslist";
+    db.query(query, (err, response) => {
+        if (err) throw err;
+        res.render('data', { visitorslist: response });
+    })
+})
+
 // Landing
 app.get("/", (req, res) => {
     app.use("/public", express.static("public"));
@@ -56,7 +57,7 @@ app.post("/postdata", (req, res) => {
     const angkatan = req.body.angkatan;
     const rating = req.body.rating;
 
-    const query = "INSERT INTO matkul (nama, jurusan, angkatan, rating) VALUES (?, ?, ?, ?)";
+    const query = "INSERT INTO visitorslist (nama, jurusan, angkatan, rating) VALUES (?, ?, ?, ?)";
     const values = [nama, jurusan, angkatan, rating];
     db.query(query, values, (err, response) => {
         if (err) throw err;
@@ -68,7 +69,7 @@ app.post("/postdata", (req, res) => {
 
 // 2. Baca data
 app.get("/readdata", (req, res) => {
-    const query = "SELECT * FROM visitorsList";
+    const query = "SELECT * FROM visitorslist";
     db.query(query, (err, response) => {
         if (err) throw err;
         res.send(response);
@@ -83,7 +84,7 @@ app.put("/updatedata/:id", (req, res) => {
     const angkatan = req.body.angkatan;
     const rating = req.body.rating;
 
-    const query = "UPDATE visitorsList SET nama = ?, jurusan = ?, angkatan = ?, rating = ? WHERE id = ?";
+    const query = "UPDATE visitorslist SET nama = ?, jurusan = ?, angkatan = ?, rating = ? WHERE idvisitorslist = ?";
     const values = [nama, jurusan, angkatan, rating, id];
     db.query(query, values, (err, response) => {
         if (err) throw err;
@@ -95,7 +96,7 @@ app.put("/updatedata/:id", (req, res) => {
 app.delete("/deletedata/:id", (req, res) => {
     const id = req.params.id;
 
-    const query = "DELETE FROM visitorsList WHERE id = ?";
+    const query = "DELETE FROM visitorsList WHERE idvisitorslist = ?";
     db.query(query, id, (err, response) => {
         if (err) throw err;
         res.send({
