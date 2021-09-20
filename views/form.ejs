@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/assets/form.css", type="text/css" />
+    <title>Feedback Form</title>
+</head>
+<body>
+    <section>
+        <h1>Hi! Terima Kasih Telah Mengunjungi Portfolio Saya!</h1>
+        <h3>Tolong isi data Anda dan berikan penilaian Anda pada form berikut</h3>
+        <form>
+            <p> Nama </p>
+            <input name="nama" id="nama" type="text" placeholder="Nama Anda">
+            <p> Jurusan </p>
+            <input name="jurusan" id="jurusan" type="text" placeholder="Jurusan Anda">
+            <p> Angkatan </p>
+            <input name="angkatan" id="angkatan" type="text" placeholder="Angkatan Anda">
+            <p> Rating </p>
+            <input name="rating" id="rating" type="text" placeholder="Rating yang Anda berikan (1 - 5)">
+            <button type="submit">Submit</button>
+            <p id="submitting"></p>
+        </form>
+        <a href="/"> Kembali ke Halaman awal</a> <a href="/data"> Data Pengunjung Web </a>
+    </section>
+</body>
+<script>
+    const form = document.querySelector('form');
+    const submitting = document.getElementById('submitting'); 
+
+    form.addEventListener("submit", (event) => {
+        const nama = document.getElementById("nama").value;
+        const jurusan = document.getElementById("jurusan").value;
+        const angkatan = document.getElementById("angkatan").value;
+        const rating = document.getElementById("rating").value;
+
+        submitting.innerHTML = "Submitting...";
+        fetch("http://localhost:4444/postdata", {
+            method: "POST",
+            headers: {
+                'Content-type' : 'application/json'
+            },
+            body: JSON.stringify({
+                nama: nama,
+                jurusan: jurusan,
+                angkatan: angkatan,
+                rating: rating
+            })
+        })
+        .then(response => response.json())
+        .then((data) => {
+            submitting.innerHTML = data.message;
+        })
+        .catch((err) => {
+            submitting.innerHTML = err;
+        })
+    event.preventDefault();
+    })
+
+    
+</script>
+</html>
